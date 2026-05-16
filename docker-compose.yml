@@ -1,0 +1,10 @@
+services:
+  ecocode_ai:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+    volumes:
+      - ./repos:/app/repos
+    restart: unless-stopped

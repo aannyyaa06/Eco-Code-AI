@@ -1,0 +1,29 @@
+# --- EcoCode AI Streamlit app ---
+streamlit>=1.28
+plotly
+pandas
+altair
+GitPython
+psutil
+reportlab
+codecarbon
+PyYAML
+python-dotenv
+
+# --- Static analysis ---
+radon
+pylint
+
+# --- ML / training (large wheels) ---
+torch
+transformers
+datasets
+PyGithub
+
+numpy
+google-generativeai
+streamlit
+codecarbon
+matplotlib
+pandas
+python-dotenv
