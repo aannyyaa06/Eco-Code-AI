@@ -1,0 +1,26 @@
+name: Sustainability Checks
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  analyze-code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          pip install radon pylint psutil codecarbon
+      - name: Run code complexity checks
+        run: |
+          radon cc . -a
+          radon mi . -s
+      - name: Sustainability Report
+        run: |
+          echo "Sustainability Report" > report.txt
+          echo "Please review potential performance hits." >> report.txt

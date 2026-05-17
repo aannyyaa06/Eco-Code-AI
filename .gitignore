@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+repos/
+*.log
+leaderboard.json
+.DS_Store
+.idea/
+*.pdf
