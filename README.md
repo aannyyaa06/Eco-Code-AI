@@ -5,7 +5,6 @@
 # EcoCode AI
 
 **Your code has a carbon footprint. We measure it. We fix it.**
-
 <br />
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
@@ -13,12 +12,8 @@
 [![Gemini AI](https://img.shields.io/badge/Google-Gemini_AI-4285F4?style=flat-square&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
 [![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
-
 <br />
-
 </div>
-
----
 
 ## Overview
 
@@ -59,7 +54,29 @@ Inefficient code is not just a performance problem. It is an environmental one.
 - **Two-Layer Refactoring** — Deterministic rule-based fixes followed by Google Gemini AI for advanced optimization
 - **Global Leaderboard** — Competitive sustainability rankings across all platform users
 - **PDF Report Export** — One-click export of scores, charts, and AI suggestions into a shareable professional document
+---
 
+## 🧠 Gemini AI Analyzer
+
+<p align="center">
+  <img src="images/gemini_ai_analyzer.png" width="900"/>
+</p>
+
+---
+
+## 📊 Sustainability Dashboard
+
+<p align="center">
+  <img src="images/dashboard.png" width="900"/>
+</p>
+
+---
+
+## ⚡ Optimization Simulator
+
+<p align="center">
+  <img src="images/simulator.png" width="900"/>
+</p>
 ---
 
 ## Architecture
