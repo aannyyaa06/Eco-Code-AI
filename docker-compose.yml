@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 services:
   ecocode_ai:
     build: .
@@ -8,3 +9,15 @@ services:
     volumes:
       - ./repos:/app/repos
     restart: unless-stopped
+=======
+services:
+  ecocode_ai:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+    volumes:
+      - ./repos:/app/repos
+    restart: unless-stopped
+>>>>>>> 3ca4c4ed1728de16735324a5cc1c660905f89060
