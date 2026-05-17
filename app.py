@@ -438,9 +438,8 @@ def render_gemini_tab() -> None:
                     expanded=True
                 ):
 
-                    st.code(
-                        optimized,
-                        language="python"
+                    st.markdown(
+                        optimized
                     )
 
 
