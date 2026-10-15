@@ -1,60 +1,19 @@
-<<<<<<< HEAD
 # --- EcoCode AI Streamlit app ---
 streamlit>=1.28
-plotly
-pandas
-altair
-GitPython
-psutil
-reportlab
-codecarbon
-PyYAML
-python-dotenv
+plotly>=5.18
+pandas>=2.1
+altair>=5.2
+GitPython>=3.1
+psutil>=5.9
+reportlab>=4.0
+codecarbon>=2.3
+PyYAML>=6.0
+python-dotenv>=1.0
 
 # --- Static analysis ---
-radon
-pylint
+radon>=6.0
+pylint>=3.0
 
-# --- ML / training (large wheels) ---
-torch
-transformers
-datasets
-PyGithub
-
-numpy
-google-generativeai
-streamlit
-codecarbon
-matplotlib
-pandas
-=======
-# --- EcoCode AI Streamlit app ---
-streamlit>=1.28
-plotly
-pandas
-altair
-GitPython
-psutil
-reportlab
-codecarbon
-PyYAML
-python-dotenv
-
-# --- Static analysis ---
-radon
-pylint
-
-# --- ML / training (large wheels) ---
-torch
-transformers
-datasets
-PyGithub
-
-numpy
-google-generativeai
-streamlit
-codecarbon
-matplotlib
-pandas
->>>>>>> 3ca4c4ed1728de16735324a5cc1c660905f89060
-python-dotenv
+# --- AI ---
+numpy>=1.24
+google-generativeai>=0.8

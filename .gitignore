@@ -8,3 +8,5 @@ leaderboard.json
 .DS_Store
 .idea/
 *.pdf
+.env
+emissions/

@@ -156,7 +156,6 @@ Inefficient code is not just a performance problem. It is an environmental one.
 | Carbon Tracking | CodeCarbon | CO₂ emission measurement |
 | Resource Monitoring | psutil, tracemalloc | CPU and memory profiling |
 | Code Analysis | Python AST, Radon, Pylint | Structural code inspection |
-| ML Foundation | CodeBERT | Inefficiency pattern recognition |
 | Visualization | Plotly, Pandas | Charts and data handling |
 | Containerization | Docker, Docker Compose | Deployment and portability |
 
@@ -174,8 +173,8 @@ Inefficient code is not just a performance problem. It is an environmental one.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ecocode-ai.git
-cd ecocode-ai
+git clone https://github.com/yashkapur0403/Eco-Code-AI.git
+cd Eco-Code-AI
 
 # Configure environment
 cp .env.example .env
@@ -187,12 +186,20 @@ docker-compose up --build
 
 Open `http://localhost:8501` in your browser.
 
+### Option 3 — Streamlit Community Cloud (Free)
+
+1. Push your repo to GitHub
+2. Go to [share.streamlit.io](https://share.streamlit.io)
+3. Connect your GitHub repository
+4. Set the main file to `app.py`
+5. Add `GEMINI_API_KEY` in the app's Secrets settings
+
 ### Option 2 — Local Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ecocode-ai.git
-cd ecocode-ai
+git clone https://github.com/yashkapur0403/Eco-Code-AI.git
+cd Eco-Code-AI
 
 # Install dependencies
 pip install -r requirements.txt
@@ -225,34 +232,29 @@ Additional settings are available in `config.yaml`.
 ecocode-ai/
 │
 ├── app.py                    # Main Streamlit dashboard entry point
-├── dashboard.py              # Alternative dashboard layout
 │
 ├── sandbox.py                # Sandboxed execution manager
 ├── energy_runner.py          # Carbon and resource measurement worker
 │
-├── klean_analysis.py         # Static analysis engine (AST + Radon + Pylint)
+├── ecocode_ai_analysis.py    # Static analysis engine (AST + Radon + Pylint)
 ├── refactor_engine.py        # Rule-based code refactoring
 ├── gemini_analyzer.py        # Google Gemini AI integration
 │
-├── repo_analyzer.py          # GitHub repository scanner
-├── klean_leaderboard.py      # Global leaderboard system
+├── ecocode_ai_repo_scan.py   # Deep repository scanner
+├── repo_analyzer.py          # Repository scan dashboard adapter
+├── ecocode_ai_leaderboard.py # Global leaderboard system
 ├── pdf_generator.py          # PDF report generator
-├── klean_pdf_report.py       # PDF report helper
 │
-├── trainer.py                # CodeBERT model training
-├── local_train.py            # Local training script
-├── benchmark_a.py            # Performance benchmarking
-├── analyze_emissions.py      # Emissions data processing
-├── CUDA_opt.py               # GPU/CUDA optimization (experimental)
-├── parallel_optimization.py  # Multi-threading optimization (experimental)
+├── input/                    # Sample unoptimized challenge files
+├── output/                   # Sample optimized challenge files
+├── images/                   # Screenshots and assets
 │
 ├── requirements.txt          # Python dependencies
 ├── Dockerfile                # Container configuration
 ├── docker-compose.yml        # Multi-container orchestration
 ├── config.yaml               # Application configuration
-├── config_parser.py          # Configuration parser
-├── logging_config.py         # Logging setup
-└── .env                      # Environment variables (not committed)
+├── .env.example              # Environment variable template
+└── .streamlit/config.toml    # Streamlit theme configuration
 ```
 
 ---
