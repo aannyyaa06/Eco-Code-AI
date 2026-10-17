@@ -1,357 +1,211 @@
 <div align="center">
 
-<br />
-
 # EcoCode AI
 
-**Your code has a carbon footprint. We measure it. We fix it.**
-<br />
+**Understand code efficiency. Explore ways to make it greener.**
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io)
-[![Gemini AI](https://img.shields.io/badge/Google-Gemini_AI-4285F4?style=flat-square&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
+[![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io)
+[![Gemini](https://img.shields.io/badge/AI-Google_Gemini-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
+[![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
 [![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
-<br />
+
+[Open the live app](https://ecocode-ai.onrender.com) · [Deployment guide](DEPLOYMENT.md)
+
 </div>
 
-## Overview
+EcoCode AI is a Streamlit web application for exploring Python code performance and sustainability. Paste a snippet to inspect its structure, run it for resource measurements, try automatic or Gemini-generated optimizations, and compare versions. You can also scan a public GitHub repository for basic structural signals.
 
-EcoCode AI is an **AI-powered sustainable software engineering platform** that makes the invisible cost of inefficient code visible, measurable, and fixable.
+## What the app does
 
-Developers paste Python code or link a GitHub repository. The platform runs it in a safe sandbox, measures its real carbon emissions, assigns a **Green Score out of 100**, and returns a fully optimized version — rewritten by Google Gemini AI — with a complete sustainability report.
+The dashboard has seven tabs:
 
-Green code and good code are the same thing. EcoCode AI makes sustainable software engineering the default, not the exception.
+| Tab | What you can do |
+| --- | --- |
+| **Workspace** | Paste Python code, see a syntax check, run static and measured analysis, or apply safe rule-based refactoring. |
+| **Gemini AI** | Ask Google Gemini for a sustainability-oriented code review or an optimized code suggestion. |
+| **Simulator** | Run a snippet, apply the rule-based optimizer, then compare the original and transformed snippets' runtime, memory, and estimated CO₂. |
+| **Metrics** | View the Green Score, runtime/resource measurements from the last analysis, and download a PDF summary. |
+| **Learn** | Read short guidance on algorithmic efficiency, memory, dependencies, and carbon-aware practices. |
+| **Leaderboard** | Submit a display name and score to a simple leaderboard. |
+| **Repo** | Scan a public GitHub URL or a directory available to the running app. |
 
----
+### Typical workflow
 
-## The Problem
+1. Open the [live app](https://ecocode-ai.onrender.com) or run it locally.
+2. In **Workspace**, paste a short Python snippet and click **Analyze (measured + static)**.
+3. Review the score and metrics in **Metrics**, and read the suggestions.
+4. Try **Refactor (safe transforms)** or ask the **Gemini AI** tab for another suggestion.
+5. Use **Simulator** to compare the original snippet with the rule-based transformed version.
+6. Optionally export a PDF or scan a public repository in **Repo**.
 
-Data centers consume an estimated **2–3% of global electricity**, a number that grows every year as the world writes more software. Yet developers have no tools to understand the environmental cost of their code. The damage is invisible — so it goes unfixed.
+## How analysis works
 
-Every unnecessary nested loop, every brute-force algorithm, every inefficient memory allocation forces a server somewhere to work harder than it needs to. In most of the world, that server still runs on fossil fuels.
+### Workspace analysis
 
-Inefficient code is not just a performance problem. It is an environmental one.
+The app first runs submitted Python through `sandbox.py` and `energy_runner.py` in a child process, with a timeout. The worker attempts to collect:
 
----
+- **Elapsed runtime** using Python's performance timer.
+- **Python allocation peak** using `tracemalloc`.
+- **Process memory and CPU** using `psutil`.
+- **Estimated CO₂ emissions** using CodeCarbon.
 
-## What It Does
+Static analysis parses the code with Python's AST and looks for metrics and patterns such as functions, classes, loops, branch count, loop nesting, long lines, bare `except`, `sleep()` in loops, type annotations, docstrings, and a specific naive recursive Fibonacci pattern. Radon is used for average cyclomatic complexity when available. The project also provides code-quality and optimization suggestions.
 
-| Step | Action | Description |
-|------|--------|-------------|
-| 01 | **Measure** | Runs code in an isolated sandbox and captures real CO₂ emissions, CPU spikes, and memory footprint |
-| 02 | **Score** | Combines runtime emissions with structural code analysis to produce a transparent Green Score / 100 |
-| 03 | **Fix** | Rewrites code using rule-based refactoring and Google Gemini AI, with a full explanation of every change |
+### Green Score
 
----
+The Green Score is a project-specific heuristic from 0 to 100. It is **not** a standardized certification or a direct measurement of carbon emissions. The current implementation in `ecocode_ai_analysis.py`:
 
-## Features
+1. Starts from 38 points.
+2. Adds up to 22 points for docstring coverage and 14 for typed function parameters.
+3. Subtracts penalties for long lines, the detected naive Fibonacci pattern, bare exception handlers, `sleep()` inside loops, and high Radon complexity.
+4. When a measured run succeeds, may add points based on the worker's CPU-efficiency heuristic and a short-duration bonus.
+5. Clamps the result to the range 0–100.
 
-- **Green Score Dashboard** — A single, transparent sustainability score broken down by emissions, complexity, and code smell penalties
-- **Sandboxed Carbon Measurement** — Live CO₂ tracking during actual code execution, fully isolated from the host environment
-- **Before vs After Simulator** — Runs original and optimized code side by side and renders the exact seconds saved and grams of CO₂ reduced
-- **GitHub Repository Scanner** — Paste any public repository URL and audit the entire codebase for energy impact
-- **Two-Layer Refactoring** — Deterministic rule-based fixes followed by Google Gemini AI for advanced optimization
-- **Global Leaderboard** — Competitive sustainability rankings across all platform users
-- **PDF Report Export** — One-click export of scores, charts, and AI suggestions into a shareable professional document
----
+The score should be read as a code-analysis indicator, not a promise that a particular change will reduce real-world emissions by the same percentage.
 
-## 🧠 Gemini AI Analyzer
+### Refactoring and Gemini
 
-<p align="center">
-  <img src="images/gemini_ai_analyzer.png" width="900"/>
-</p>
+- **Rule-based refactoring** uses deterministic transformations and templates from `ecocode_ai_analysis.py` and `refactor_engine.py`. The Simulator uses this optimizer to produce its “after” version.
+- **Gemini AI** sends the pasted code to Google's `gemini-2.5-flash` model for a review or optimization suggestion. AI-generated output is a suggestion: inspect and test it before using it.
+- Gemini features require a `GEMINI_API_KEY`. The other app features do not require it.
 
----
+### Simulator
 
-## 📊 Sustainability Dashboard
+The Simulator runs the original snippet and the rule-based optimized snippet separately, then displays their measured runtime, memory, and CodeCarbon output. These are individual short runs, not a controlled benchmark: machine load, warm-up, and very short runtimes can affect results. CodeCarbon may report zero or too little CO₂ to distinguish snippets. Treat the comparison as indicative, especially for tiny examples.
 
-<p align="center">
-  <img src="images/dashboard.png" width="900"/>
-</p>
+### Repository scanner
 
----
+The Repo tab clones a public GitHub repository or scans a local directory visible to the server. The current scanner:
 
-## ⚡ Optimization Simulator
+- Walks at most 400 files and excludes common generated/dependency folders such as `.git`, virtual environments, `node_modules`, and build/test caches.
+- Counts Python files and total scanned file size.
+- Lists files over 350 KB and Python files over 80 KB.
+- Hashes normalized sliding five-line windows in Python files and reports matching windows as possible duplication.
+- Reports the largest line count found in a requirements-style file (`requirements.txt`, `pyproject.toml`, or `Pipfile`).
+- Displays an **estimated unused-dependency count** derived only from that line count.
+- Produces a **heuristic potential-savings percentage** from fixed weights for file size, repeated windows, large Python files, and dependency-file length.
 
-<p align="center">
-  <img src="images/simulator.png" width="900"/>
-</p>
----
+This scanner does **not** execute every file, determine whether dependencies are actually unused, or measure repository energy or carbon. Duplicate windows can overlap or be ordinary repeated boilerplate. Its savings percentage is a triage heuristic, not a measured forecast. Review the listed evidence yourself before changing a repository.
 
-## Architecture
+### PDF and leaderboard
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        USER INPUT                           │
-│              Python Code  ──or──  GitHub URL                │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  SANDBOXED EXECUTION                        │
-│                                                             │
-│   sandbox.py  →  spawns isolated child process              │
-│   energy_runner.py  →  hooks into measurement tools         │
-│                                                             │
-│   ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐  │
-│   │ CodeCarbon  │  │ tracemalloc  │  │     psutil      │  │
-│   │  CO₂ Track  │  │Memory Peaks  │  │  CPU Utilization│  │
-│   └─────────────┘  └──────────────┘  └─────────────────┘  │
-│                         │                                   │
-│              JSON payload → stdout → sandbox.py             │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   STATIC ANALYSIS                           │
-│                                                             │
-│   klean_analysis.py  →  reads code without executing        │
-│                                                             │
-│   ┌──────────────┐  ┌──────────┐  ┌────────────────────┐  │
-│   │  Python AST  │  │  Radon   │  │      Pylint        │  │
-│   │ O(n²) loops  │  │Complexity│  │  Code Quality      │  │
-│   │ code smells  │  │ Scoring  │  │  Analysis          │  │
-│   └──────────────┘  └──────────┘  └────────────────────┘  │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    GREEN SCORE                              │
-│                                                             │
-│   GreenScore = 100 − (w₁·Emission + w₂·Complexity +        │
-│                        w₃·CodeSmell)                        │
-│                                                             │
-│   Every component transparent · Every weight explainable   │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   REFACTORING ENGINE                        │
-│                                                             │
-│   Layer 1: refactor_engine.py                               │
-│   → Deterministic rule-based transformations                │
-│   → Safe, guaranteed improvements                           │
-│                                                             │
-│   Layer 2: gemini_analyzer.py                               │
-│   → Google Gemini AI advanced optimization                  │
-│   → Human-readable explanation of every change              │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│              SIMULATOR  ·  LEADERBOARD  ·  PDF              │
-└─────────────────────────────────────────────────────────────┘
+The PDF report summarizes the current Green Score, the latest measured runtime, memory, CPU, CO₂ value, and suggestions. The leaderboard stores a small JSON list on the app filesystem; it has no accounts or database, so entries may not persist across redeploys or instance changes.
+
+## Important security and measurement limitations
+
+> **Do not treat the code runner as a security sandbox.**
+
+The app starts submitted code in a child process, checks for a few suspicious source patterns, and applies a timeout. This is not strong isolation: it is not a substitute for a restricted container, OS-level sandbox, or separate execution service. Do not use the public deployment to run code from untrusted people or sensitive code unless a stronger isolation boundary has been added.
+
+Resource and carbon readings depend on the host, workload, installed tools, and run duration. Short runs can be dominated by measurement overhead or produce zero readings. Static signals and the Green Score are heuristics; they do not prove environmental impact or code correctness.
+
+The app does not provide user accounts or private workspaces. Do not paste secrets, credentials, or proprietary code into the hosted app. Code sent to Gemini is processed by Google's API under the applicable Google service terms.
+
+## Run locally
+
+### Requirements
+
+- Python 3.9 or newer
+- Git, if you want to scan GitHub repositories
+- A Gemini API key only if you want to use Gemini features
+
+### Windows PowerShell
+
+```powershell
+git clone https://github.com/aannyyaa06/Eco-Code-AI.git
+Set-Location Eco-Code-AI
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 ```
 
----
-
-## Tech Stack
-
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Language | Python 3.9+ | Core platform |
-| Frontend | Streamlit | Dashboard and UI |
-| AI Optimization | Google Gemini API | Advanced code refactoring |
-| Carbon Tracking | CodeCarbon | CO₂ emission measurement |
-| Resource Monitoring | psutil, tracemalloc | CPU and memory profiling |
-| Code Analysis | Python AST, Radon, Pylint | Structural code inspection |
-| Visualization | Plotly, Pandas | Charts and data handling |
-| Containerization | Docker, Docker Compose | Deployment and portability |
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.9 or higher
-- Docker and Docker Compose
-- Google Gemini API key — [Get one here](https://aistudio.google.com/app/apikey)
-
-### Option 1 — Docker (Recommended)
-
-```bash
-# Clone the repository
-git clone https://github.com/yashkapur0403/Eco-Code-AI.git
-cd Eco-Code-AI
-
-# Configure environment
-cp .env.example .env
-# Open .env and add your GEMINI_API_KEY
-
-# Build and run
-docker-compose up --build
-```
-
-Open `http://localhost:8501` in your browser.
-
-### Option 3 — Streamlit Community Cloud (Free)
-
-1. Push your repo to GitHub
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Connect your GitHub repository
-4. Set the main file to `app.py`
-5. Add `GEMINI_API_KEY` in the app's Secrets settings
-
-### Option 2 — Local Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yashkapur0403/Eco-Code-AI.git
-cd Eco-Code-AI
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment
-cp .env.example .env
-# Open .env and add your GEMINI_API_KEY
-
-# Run the application
-streamlit run app.py
-```
-
----
-
-## Configuration
-
-Create a `.env` file in the project root:
+Create a `.env` file in the project root for Gemini features:
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_API_KEY=your_new_key_here
 ```
 
-Additional settings are available in `config.yaml`.
+Then start the dashboard:
 
----
-
-## Project Structure
-
-```
-ecocode-ai/
-│
-├── app.py                    # Main Streamlit dashboard entry point
-│
-├── sandbox.py                # Sandboxed execution manager
-├── energy_runner.py          # Carbon and resource measurement worker
-│
-├── ecocode_ai_analysis.py    # Static analysis engine (AST + Radon + Pylint)
-├── refactor_engine.py        # Rule-based code refactoring
-├── gemini_analyzer.py        # Google Gemini AI integration
-│
-├── ecocode_ai_repo_scan.py   # Deep repository scanner
-├── repo_analyzer.py          # Repository scan dashboard adapter
-├── ecocode_ai_leaderboard.py # Global leaderboard system
-├── pdf_generator.py          # PDF report generator
-│
-├── input/                    # Sample unoptimized challenge files
-├── output/                   # Sample optimized challenge files
-├── images/                   # Screenshots and assets
-│
-├── requirements.txt          # Python dependencies
-├── Dockerfile                # Container configuration
-├── docker-compose.yml        # Multi-container orchestration
-├── config.yaml               # Application configuration
-├── .env.example              # Environment variable template
-└── .streamlit/config.toml    # Streamlit theme configuration
+```powershell
+python -m streamlit run app.py
 ```
 
----
+Open `http://localhost:8501`.
 
-## The Green Score
+### macOS or Linux
 
-The Green Score is a single number out of 100 that reflects the overall sustainability of a piece of code. It is calculated from three normalized penalty signals:
-
+```bash
+git clone https://github.com/aannyyaa06/Eco-Code-AI.git
+cd Eco-Code-AI
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 ```
-GreenScore = 100 − (w₁ · EmissionPenalty + w₂ · ComplexityPenalty + w₃ · SmellPenalty)
+
+Optionally create `.env` with `GEMINI_API_KEY=your_new_key_here`, then run:
+
+```bash
+python -m streamlit run app.py
 ```
 
-**EmissionPenalty** — Derived from real CO₂ measured during sandboxed execution via CodeCarbon
+Never commit `.env` or publish an API key. If a key is exposed, revoke it and replace it.
 
-**ComplexityPenalty** — Derived from cyclomatic complexity calculated by Radon. High complexity indicates code paths that waste computation
+## Deploy on Render
 
-**SmellPenalty** — Derived from AST-detected anti-patterns including nested loops, unnecessary recursion, blocking calls inside loops, and missing type annotations
+The live service is [ecocode-ai.onrender.com](https://ecocode-ai.onrender.com). This repository includes a Render Blueprint (`render.yaml`) and a Dockerfile configured to listen on Render's assigned port.
 
-Every component is transparent and explainable. Developers always understand exactly why their score is what it is.
+To create or update a Render deployment:
 
----
+1. Push the repository to GitHub.
+2. In Render, open **Blueprints** and choose **New Blueprint Instance**.
+3. Select `aannyyaa06/Eco-Code-AI`, branch `main`, and Blueprint path `render.yaml`.
+4. Set `GEMINI_API_KEY` to a valid, private API key in Render's environment settings. Rotate any key that has been exposed.
+5. Deploy the Blueprint and open the service URL Render provides.
 
-## Engineering Challenges
+See [DEPLOYMENT.md](DEPLOYMENT.md) for more details. The app is a persistent Streamlit server; Vercel is not the host for this Streamlit deployment.
 
-**Sandboxing untrusted code at scale**
-Running arbitrary user code safely required building a two-layer isolation system. `sandbox.py` spawns a child process with a hard timeout. `energy_runner.py` writes measurement results to stdout as its final action, ensuring data is never lost when the timeout fires mid-execution.
+## Project structure
 
-**Carbon measurement at millisecond timescales**
-CodeCarbon is designed for long model training runs, not short scripts. At small timescales, emission readings approach zero regardless of actual code quality. The solution was to combine runtime emissions with static analysis penalties, keeping the Green Score meaningful even when runtime measurements alone cannot distinguish between good and bad code.
+| File or folder | Purpose |
+| --- | --- |
+| `app.py` | Streamlit page, tabs, interaction flow, and presentation of analysis results. |
+| `sandbox.py` | Starts the measurement worker, applies timeout handling, and parses its output. |
+| `energy_runner.py` | Executes a snippet and gathers runtime/resource/CodeCarbon data. |
+| `ecocode_ai_analysis.py` | AST-based code statistics, complexity hooks, Green Score, and rule-based analysis. |
+| `refactor_engine.py` | Complexity helpers, suggestions, and rule-based optimized-code generation. |
+| `gemini_analyzer.py` | Gemini API key loading and code review/optimization prompts. |
+| `ecocode_ai_repo_scan.py` | Heuristic repository file and repeated-window scan. |
+| `repo_analyzer.py` | Adapts scanner output for the Streamlit UI. |
+| `pdf_generator.py` | Creates downloadable PDF reports. |
+| `ecocode_ai_leaderboard.py` | JSON-file leaderboard operations. |
+| `input/`, `output/` | Example challenge inputs and optimized examples. |
+| `images/` | App screenshots and other project images. |
+| `tests/` | Core module tests. |
+| `render.yaml`, `Dockerfile` | Render Blueprint and container configuration. |
 
-**Trustworthy AI refactoring**
-Generating refactored code with Gemini AI is straightforward. Ensuring developers trust and understand those changes is not. The platform always shows the refactored version alongside the original, never replacing it silently. Every change Gemini makes is accompanied by a plain-language explanation.
+## Run tests
 
-**Depth without complexity**
-EcoCode AI touches sandboxing, AST parsing, carbon tracking, machine learning, and AI integration simultaneously. Keeping the dashboard comprehensible in under thirty seconds — while the engineering underneath is genuinely complex — required multiple UI iterations and significant scope discipline.
+Install the dependencies, then run:
 
----
+```bash
+python -m unittest discover -s tests -v
+```
 
-## Results
+## Technology
 
-Across all test cases evaluated during development:
-
-- Average CO₂ reduction of **75%** between original and optimized code
-- Average runtime improvement of **4x** after optimization
-- Green Score improvements of **30–60 points** on code with common inefficiency patterns
-
----
-
-## Roadmap
-
-- [ ] Multi-language support — JavaScript, Java, C++
-- [ ] ML-trained Green Score weights replacing heuristic values
-- [ ] CI/CD pipeline integration for automatic carbon audits on pull requests
-- [ ] Team and organization dashboards for collective carbon tracking
-- [ ] IDE extension for real-time Green Score feedback inside the editor
-- [ ] Browser extension for lightweight code auditing without leaving the browser
-
----
+- Python and Streamlit
+- Google Gemini API (`google-generativeai`)
+- CodeCarbon, `psutil`, and `tracemalloc`
+- Python AST, Radon, and Pylint
+- Plotly and Pandas
+- Docker and Render
 
 ## Contributing
 
-Contributions are welcome. Please open an issue first to discuss what you would like to change.
-
-```bash
-# Fork the repository
-# Create your feature branch
-git checkout -b feature/your-feature-name
-
-# Commit your changes
-git commit -m "Add your feature"
-
-# Push to the branch
-git push origin feature/your-feature-name
-
-# Open a pull request
-```
-
----
+Contributions are welcome. Open an issue to discuss a significant change, then submit a pull request with a clear description and tests where appropriate.
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-## Acknowledgments
-
-- [CodeCarbon](https://codecarbon.io) — Carbon tracking infrastructure
-- [Google Gemini](https://deepmind.google/technologies/gemini/) — AI-powered code optimization
-- [Streamlit](https://streamlit.io) — Dashboard framework
-- [Radon](https://radon.readthedocs.io) — Cyclomatic complexity analysis
-- [Pylint](https://pylint.org) — Code quality analysis
-
----
-
-<div align="center">
-
-**EcoCode AI** — Built for developers who believe green code and good code are the same thing.
-
-</div>
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
