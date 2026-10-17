@@ -180,8 +180,6 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for more details. The app is a persistent Str
 | `repo_analyzer.py` | Adapts scanner output for the Streamlit UI. |
 | `pdf_generator.py` | Creates downloadable PDF reports. |
 | `ecocode_ai_leaderboard.py` | JSON-file leaderboard operations. |
-| `input/`, `output/` | Example challenge inputs and optimized examples. |
-| `images/` | App screenshots and other project images. |
 | `tests/` | Core module tests. |
 | `render.yaml`, `Dockerfile` | Render Blueprint and container configuration. |
 
