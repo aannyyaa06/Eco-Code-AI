@@ -30,19 +30,28 @@ The official and easiest way to deploy any Streamlit application for free:
 
 ---
 
-## 🐳 Option 2: Render.com (Free Web Service / Docker)
+## 🐳 Option 2: Render
 
-Render supports persistent Python web applications and Docker containers:
+> **Security warning:** This app executes submitted Python in a subprocess.
+> That is not a full security sandbox. Do not expose code execution to untrusted
+> public users until it is isolated with a strong boundary (for example, a
+> separately restricted container/service).
 
-1. Push your repository to GitHub.
-2. Go to [render.com](https://render.com) and create a **New Web Service**.
-3. Connect your GitHub repository.
-4. Choose **Docker** environment (it automatically detects the included `Dockerfile`), or **Python 3**:
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `streamlit run app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true`
-5. In **Environment Variables**, add:
-   - `GEMINI_API_KEY`: your Gemini API key.
-6. Click **Deploy Web Service**.
+The repository includes a Render Blueprint in `render.yaml` and a Docker image
+that listens on Render's assigned `$PORT`.
+
+1. Push the repository to GitHub.
+2. Open [Render Blueprints](https://dashboard.render.com/blueprints) and select
+   **New Blueprint Instance**.
+3. Connect the GitHub repository and deploy the `render.yaml` Blueprint.
+4. Add your `GEMINI_API_KEY` when prompted, or set it later under the service's
+   **Environment** settings. The key is optional for non-Gemini features.
+5. Open the service URL shown by Render after deployment.
+
+For manual setup, create a **Web Service**, choose **Docker**, and use the
+repository's `Dockerfile`. Set `STREAMLIT_BROWSER_GATHER_USAGE_STATS=false` and,
+if using Gemini, add `GEMINI_API_KEY` as a secret environment variable. Do not
+commit a `.env` file; `.dockerignore` excludes it from Docker builds.
 
 ---
 
